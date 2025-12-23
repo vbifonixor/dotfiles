@@ -1,9 +1,15 @@
-scoop install starship
+scoop bucket add extras;
+scoop bucket add nerd-fonts;
 
-# Change to scoop install mise after pr is merged into scoop
-# https://github.com/ScoopInstaller/Main/pull/6374
-cargo-binstall mise
-
+scoop install starship;
+scoop install mise;
+scoop install extras/vscode;
+scoop install extras/vivaldi;
+scoop install telegram;
+scoop install nerd-fonts/JetBrainsMono-NF;
+scoop install main/gnupg;
+scoop install extras/bitwarden;
+scoop install powertoys;
 
 # Install mise
 mise activate nu | save "~/.config/nushell/mise.gen.nu" -f
