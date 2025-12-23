@@ -10,6 +10,7 @@ scoop install nerd-fonts/JetBrainsMono-NF;
 scoop install main/gnupg;
 scoop install extras/bitwarden;
 scoop install powertoys;
+scoop install extras/flow-launcher;
 
 # Install mise
 mise activate nu | save "~/.config/nushell/mise.gen.nu" -f
