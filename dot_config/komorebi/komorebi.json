@@ -1,0 +1,55 @@
+{
+  "$schema": "https://raw.githubusercontent.com/LGUG2Z/komorebi/v0.1.39/schema.json",
+  "window_hiding_behaviour": "Cloak",
+  "cross_monitor_move_behaviour": "Insert",
+  "default_workspace_padding": 10,
+  "default_container_padding": 5,
+  "app_specific_configuration_path": "$Env:KOMOREBI_CONFIG_HOME/applications.json",
+  "bar_configurations": [
+    "$Env:KOMOREBI_CONFIG_HOME/komorebi.bar.json",
+    "$Env:KOMOREBI_CONFIG_HOME/komorebi.bar2.json"
+  ],
+  "border": true,
+  "border_width": 2,
+  "border_offset": -1,
+  "theme": {
+    "palette": "Base16",
+    "name": "CatppuccinFrappe",
+    "unfocused_border": "Base03",
+    "bar_accent": "Base0D"
+  },
+  "monitors": [
+    {
+      "workspaces": [
+        {
+          "name": "wrk",
+          "layout": "RightMainVerticalStack"
+        },
+        {
+          "name": "fun",
+          "layout": "VerticalStack"
+        }
+      ]
+    },
+    {
+      "workspaces": [
+        {
+          "name": "cms",
+          "layout": "BSP"
+        },
+        {
+          "name": "org",
+          "layout": "BSP"
+        },
+        {
+          "name": "mus",
+          "layout": "BSP"
+        },
+        {
+          "name": "etc",
+          "layout": "BSP"
+        }
+      ]
+    }
+  ]
+}

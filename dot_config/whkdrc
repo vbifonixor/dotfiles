@@ -1,0 +1,64 @@
+.shell powershell
+
+# Reload whkd configuration
+# alt + o                 : taskkill /f /im whkd.exe && start /b whkd # if shell is cmd
+f13 + o                 : taskkill /f /im whkd.exe; Start-Process whkd -WindowStyle hidden # if shell is pwsh / powershell
+f13 + shift + o         : komorebic reload-configuration
+
+f13 + f1                 : komorebic toggle-shortcuts
+
+# App shortcuts - these require shell to be pwsh / powershell
+# The apps will be focused if open, or launched if not open
+# alt + f                 : if ($wshell.AppActivate('Firefox') -eq $False) { start firefox }
+# alt + b                 : if ($wshell.AppActivate('Chrome') -eq $False) { start chrome }
+
+f13 + q                 : komorebic close
+f13 + n                 : komorebic minimize
+
+# Focus windows
+f13 + s                 : komorebic focus left
+f13 + d                 : komorebic focus down
+f13 + e                 : komorebic focus up
+f13 + f                 : komorebic focus right
+f13 + w     : komorebic cycle-focus previous # oem_4 is [
+f13 + r     : komorebic cycle-focus next # oem_6 is ]
+
+# Move windows
+f13 + ctrl + s         : komorebic move left
+f13 + ctrl + d         : komorebic move down
+f13 + ctrl + e         : komorebic move up
+f13 + ctrl + f         : komorebic move right
+f13 + oem_6    : komorebic promote
+
+# Stack windows
+f13 + j              : komorebic stack left
+f13 + k              : komorebic stack down
+f13 + i              : komorebic stack up
+f13 + l             : komorebic stack right
+f13 + p             : komorebic unstack # oem_1 is ;
+f13 + u             : komorebic cycle-stack previous # oem_4 is [
+f13 + o             : komorebic cycle-stack next # oem_6 is ]
+
+# Resize
+f13 + oem_plus          : komorebic resize-axis horizontal increase
+f13 + oem_minus         : komorebic resize-axis horizontal decrease
+f13 + shift + oem_plus  : komorebic resize-axis vertical increase
+f13 + shift + oem_minus : komorebic resize-axis vertical decrease
+
+# Manipulate windows
+f13 + g                 : komorebic toggle-float
+f13 + m         : komorebic toggle-monocle
+
+# Window manager options
+f13 + shift + 1         : komorebic retile
+f13 + alt + p                 : komorebic toggle-pause
+
+# Layouts
+alt + x                 : komorebic flip-layout horizontal
+alt + y                 : komorebic flip-layout vertical
+
+# Workspaces
+f13 + alt + w : komorebic cycle-workspace previous
+f13 + alt + r : komorebic cycle-workspace next
+f13 + alt + shift + w: komorebic cycle-move-to-workspace previous
+f13 + alt + shift + r: komorebic cycle-move-to-workspace next
