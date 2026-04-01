@@ -1,0 +1,80 @@
+(defcfg
+    process-unmapped-keys yes
+)
+
+(defsrc
+  esc f1   f2   f3   f4   f5   f6   f7   f8   f9  f10  f11  f12 f20 f21 f22 f23 f24
+  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc home
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \    pgup
+  caps a    s    d    f    g    h    j    k    l    ;    '    ret       pgdn
+  lsft z    x    c    v    b    n    m    ,    .    /    rsft      up   end
+  lctl lalt lmet           spc            rmet ralt rctl     left down right
+)
+
+(defvar
+  ;; Reserved constant for fn key - on nuphy keyboards
+  FN XX
+)
+
+(defalias
+  tabEd (tap-hold-release 250 250 tab (layer-while-held editor))
+  upNp (layer-switch numpad)
+  toBase (layer-switch base)
+  toNormis (layer-switch normis)
+
+  ;; Parens, brackets, parentheses, inequality signs
+  lprn (unicode "(")
+  rprn (unicode ")")
+  lbra (unicode "[")
+  rbra (unicode "]")
+  lpth (unicode "{")
+  rpth (unicode "}")
+  lthn (unicode "<")
+  gthn (unicode ">")
+
+  ;; Special symbols
+  : (unicode ":")
+  ! (unicode "!")
+  ? (unicode "?")
+  & (unicode "&")
+  dq (unicode r#"""#)
+  * (unicode "*")
+  ^ (unicode "^")
+  % (unicode "%")
+)
+
+(deflayer base
+  esc f1   f2   f3   f4   f5   f6   f7   f8   f9  f10  f11  f12 bck XX  XX  XX  XX
+  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc del
+  @tabEd q    w    e    r    t    y    u    i    o    p    [    ]    \    f13
+  lctl a    s    d    f    g    h    j    k    l    ;    '    ret       f14
+  lsft z    x    c    v    b    n    m    ,    .    /    rsft      @upNp f15
+  lctl lalt lmet           spc            rmet $FN  rctl     @toNormis lrld f16
+)
+
+(deflayer editor
+  _   _    _    _    _    _    _    prev pp   next mute vold volu A-bck C-S-p XX  C-p XX
+  _    @lprn @rprn C-z  C-S-z C-f  C-g  .    ,    _    _    -    =    C-w  C-S-t
+  _    @lbra @rbra C-x  C-c  C-v  M-left pgup up   pgdn M-right  @*   /    \    f17
+  _    @lpth @rpth lalt lsft @:   A-lft lft  down rght A-rght ;    ret       f18
+  _    @lthn @gthn =    @!   @?   @&   bspc del  @dq  '    grv       up   f19
+  _    _    _              _              _    $FN  _        left down f20
+)
+
+(deflayer numpad
+  esc XX   XX   XX   XX   XX   XX   XX   XX   XX  XX   XX   XX  XX  XX  XX  XX  XX
+  XX   XX   XX   M-z  M-S-z XX   XX   XX   XX   @lprn @rprn @:   kprt bspc del
+  @tabEd XX   XX   M-x  M-c  M-v  XX   kp7  kp8  kp9  kp/  kp*  @%   @^   XX
+  XX   XX   M-s  lalt lsft XX   XX   kp4  kp5  kp6  kp+  kp-  ret       XX
+  XX   XX   XX   XX   XX   XX   kp0  kp1  kp2  kp3  kp.  rsft      @toBase XX
+  XX   XX   XX             _              @toBase $FN  XX       XX   XX   XX
+)
+
+(deflayer normis
+  esc f1   f2   f3   f4   f5   f6   f7   f8   f9  f10  f11  f12 XX ins XX  XX  XX
+  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc del
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \    f13
+  lctl a    s    d    f    g    h    j    k    l    ;    '    ret       f14
+  lsft z    x    c    v    b    n    m    ,    .    /    rsft      up   f15
+  lctl lmet lalt           spc            @toBase $FN  rctl     left down right
+)

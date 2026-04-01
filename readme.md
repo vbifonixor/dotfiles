@@ -86,3 +86,8 @@ let ps_script = $"
 powershell -Command $ps_script
 
 ```
+
+
+### MacOS Kanata setup
+
+https://dev.to/the_lazy_/setting-up-kanata-with-karabiner-driverkit-virtualhiddevice-on-macos-1o47

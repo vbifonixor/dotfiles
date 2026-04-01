@@ -7,6 +7,10 @@ AppData/
 .chezmoiscripts/linux/**
 {{end}}
 
+{{if ne .chezmoi.os "darwin"}}
+**.mac.**
+{{end}}
+
 **/history.txt
 
 readme.md

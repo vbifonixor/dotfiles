@@ -1,0 +1,32 @@
+[general]
+
+import = [
+    "~/.config/alacritty/catppuccin-macchiato.toml"
+]
+
+[terminal]
+
+shell = "/opt/homebrew/bin/nu"
+
+[env]
+TERM = "xterm-256color"
+XDG_CONFIG_HOME = "/Users/vbifonix/.config"
+
+[font]
+size = 14.0
+
+[font.bold]
+family = "JetBrainsMono Nerd Font"
+style = "Bold"
+
+[font.bold_italic]
+family = "JetBrainsMono Nerd Font"
+style = "Bold Italic"
+
+[font.italic]
+family = "JetBrainsMono Nerd Font"
+style = "Italic"
+
+[font.normal]
+family = "JetBrainsMono Nerd Font"
+style = "Regular"
