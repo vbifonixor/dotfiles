@@ -1,14 +1,15 @@
 [general]
-
 import = ["~/.config/alacritty/catppuccin-macchiato.toml"]
 
 [terminal]
 
-shell = "/opt/homebrew/bin/nu"
+shell = "{{ .zellij_path }}"
 
 [env]
 TERM = "xterm-256color"
-XDG_CONFIG_HOME = "/Users/vbifonix/.config"
+# XDG_CONFIG_HOME = "/Users/vbifonix/.config"
+XDG_CONFIG_HOME = "C:\\Users\\vbifo\\.config"
+ZELLIJ_CONFIG_DIR = "C:\\Users\\vbifo\\.config\\zellij"
 
 [font]
 size = 14.0

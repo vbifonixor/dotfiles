@@ -1,0 +1,5 @@
+projects_dir = 'C:/Users/vbifo/Projects'
+shell_path = 'C:/Users/vbifo/scoop/shims/nu.exe'
+config_path = 'C:/Users/vbifo/.config'
+work = false
+zellij_path = 'C:/Users/vbifo/scoop/shims/zellij.exe'
