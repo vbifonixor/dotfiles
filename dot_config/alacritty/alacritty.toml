@@ -1,8 +1,6 @@
 [general]
 
-import = [
-    "~/.config/alacritty/catppuccin-macchiato.toml"
-]
+import = ["~/.config/alacritty/catppuccin-macchiato.toml"]
 
 [terminal]
 
@@ -14,6 +12,9 @@ XDG_CONFIG_HOME = "/Users/vbifonix/.config"
 
 [font]
 size = 14.0
+
+offset = { y = 4 }
+glyph_offset = { y = 2 }
 
 [font.bold]
 family = "JetBrainsMono Nerd Font"
@@ -30,3 +31,8 @@ style = "Italic"
 [font.normal]
 family = "JetBrainsMono Nerd Font"
 style = "Regular"
+
+[window]
+
+padding = { x = 20, y = 20 }
+decorations = "Transparent"
