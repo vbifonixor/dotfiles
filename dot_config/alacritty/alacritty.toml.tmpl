@@ -8,11 +8,13 @@ shell = "{{ .zellij_path }}"
 [env]
 TERM = "xterm-256color"
 # XDG_CONFIG_HOME = "/Users/vbifonix/.config"
-XDG_CONFIG_HOME = "C:\\Users\\vbifo\\.config"
-ZELLIJ_CONFIG_DIR = "C:\\Users\\vbifo\\.config\\zellij"
+# XDG_CONFIG_HOME = "C:\\Users\\vbifo\\.config"
+# ZELLIJ_CONFIG_DIR = "C:\\Users\\vbifo\\.config\\zellij"
+XDG_CONFIG_HOME = "{{ .config_path }}"
+ZELLIJ_CONFIG_DIR = "{{ .config_path }}/zellij"
 
 [font]
-size = 14.0
+size = 12.0
 
 offset = { y = 4 }
 glyph_offset = { y = 2 }
