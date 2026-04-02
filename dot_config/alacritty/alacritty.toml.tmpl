@@ -7,9 +7,6 @@ shell = "{{ .zellij_path }}"
 
 [env]
 TERM = "xterm-256color"
-# XDG_CONFIG_HOME = "/Users/vbifonix/.config"
-# XDG_CONFIG_HOME = "C:\\Users\\vbifo\\.config"
-# ZELLIJ_CONFIG_DIR = "C:\\Users\\vbifo\\.config\\zellij"
 XDG_CONFIG_HOME = "{{ .config_path }}"
 ZELLIJ_CONFIG_DIR = "{{ .config_path }}/zellij"
 
@@ -39,3 +36,4 @@ style = "Regular"
 
 padding = { x = 20, y = 20 }
 decorations = "Transparent"
+option_as_alt = "OnlyLeft"
