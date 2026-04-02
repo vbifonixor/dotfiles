@@ -1,5 +1,5 @@
-toggle_hotkey = "SUPER+SPACE"
-clipboard_hotkey = "SUPER+SHIFT+C"
+toggle_hotkey = "CTRL+SPACE"
+clipboard_hotkey = "CTRL+SHIFT+C"
 main_page = "frequentlyused"
 start_at_login = true
 placeholder = "Run..."
