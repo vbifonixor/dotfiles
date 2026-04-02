@@ -43,5 +43,6 @@ export const abbreviations = {
     "s-a": "cd {{ .projects_dir }}/probely-enterprise-frontend",
     "s-w": "cd {{ .projects_dir }}/probely-website",
     {{end}}
-    "gm--": `git fetch origin (git branch | find "*"| get 0 | into string | ansi strip | str replace "*" "" | str trim); git merge $"origin/(git branch | find "*" | get 0 | into string | ansi strip | str replace "*" "" | str trim)"`
+    "gm--": `git fetch origin (git branch | find "*"| get 0 | into string | ansi strip | str replace "*" "" | str trim); git merge $"origin/(git branch | find "*" | get 0 | into string | ansi strip | str replace "*" "" | str trim)"`,
+    "df": "cd (chezmoi source-path)"
 }
