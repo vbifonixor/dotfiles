@@ -39,10 +39,9 @@ export const abbreviations = {
     "gssh": "git stash",
     "gsshp": "git stash push -m",
     "gst": "git status",
-    "jm-wb": "cd {{ .projects_dir }}/joom-js/apps/web-client; mise use node",
-    "jm-ar": "cd {{ .projects_dir }}/joom-js/packages/admin-react; mise use node",
-    "jm-ac": "cd {{ .projects_dir }}/joom-js/packages/admin-closure/client; mise use node",
-    "s-a": "cd {{ .projects_dir}}/probely-enterprise-frontend",
-    "s-w": "cd {{ .projects_dir}}/probely-website",
+    {{if .work}}
+    "s-a": "cd {{ .projects_dir }}/probely-enterprise-frontend",
+    "s-w": "cd {{ .projects_dir }}/probely-website",
+    {{end}}
     "gm--": `git fetch origin (git branch | find "*"| get 0 | into string | ansi strip | str replace "*" "" | str trim); git merge $"origin/(git branch | find "*" | get 0 | into string | ansi strip | str replace "*" "" | str trim)"`
 }
