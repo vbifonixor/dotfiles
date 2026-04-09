@@ -1,5 +1,3 @@
-[Do this first](https://github.com/Schniz/fnm/issues/338)
-
 # Powershell: installing scoop
 
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
