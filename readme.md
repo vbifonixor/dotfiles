@@ -1,5 +1,3 @@
-[Do this first](https://github.com/Schniz/fnm/issues/338)
-
 # Powershell: installing scoop
 
 It's not possible to make it install itself using chezmoi as it's needed to get chezmoi
@@ -96,4 +94,4 @@ powershell -Command $ps_script
 
 ### MacOS Kanata setup
 
-https://dev.to/the_lazy_/setting-up-kanata-with-karabiner-driverkit-virtualhiddevice-on-macos-1o477>>>>>
+https://dev.to/the_lazy_/setting-up-kanata-with-karabiner-driverkit-virtualhiddevice-on-macos-1o477>>>
