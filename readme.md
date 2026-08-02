@@ -2,14 +2,20 @@
 
 # Powershell: installing scoop
 
+It's not possible to make it install itself using chezmoi as it's needed to get chezmoi
+
+```
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 Invoke-RestMethod -Uri <https://get.scoop.sh> | Invoke-Expression
+```
 
 # Prerequisites
 
+```nushell
 scoop install git;
-scoop install nu;
 scoop install chezmoi;
+scoop install nu; # Possibly, should install itself using .chezmoiscripts
+```
 
 # Thorax initialization
 
@@ -27,7 +33,7 @@ scoop install nssm;
 
 On Administrator terminal:
 
-```nu
+```nushell
 nssm install thorax (which rclone | get 0.path)
 nssm set thorax AppParameters "mount --vfs-cache-mode writes --dir-cache-time 5s Thorax-dav: W:"
 nssm set thorax AppDirectory (which rclone | get 0.path | path dirname)
@@ -41,8 +47,9 @@ nssm set thorax Type SERVICE_WIN32_OWN_PROCESS
 
 # Applying this dotfiles repo
 
+```nushell
 chezmoi init --apply vbifonixor
-scoop install servy
+```
 
 # Set up kanata
 
@@ -87,7 +94,6 @@ powershell -Command $ps_script
 
 ```
 
-
 ### MacOS Kanata setup
 
-https://dev.to/the_lazy_/setting-up-kanata-with-karabiner-driverkit-virtualhiddevice-on-macos-1o47
+https://dev.to/the_lazy_/setting-up-kanata-with-karabiner-driverkit-virtualhiddevice-on-macos-1o477>>>>>
