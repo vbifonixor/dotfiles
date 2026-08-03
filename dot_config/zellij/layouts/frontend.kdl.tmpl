@@ -1,0 +1,52 @@
+    layout {
+        pane size=1 borderless=true {
+            plugin location="file:~/.config/zellij/zjstatus.wasm" {
+                format_left   "{mode} #[fg=#89B4FA,bold]{session}"
+                format_center "{tabs}"
+                format_left   "{mode}#[fg=black]{tabs}"
+                format_center ""
+                format_right  "#[fg=#6867AF,bold]  {datetime}#[fg=cyan]↖ "
+                format_space  "#[fg=yellow] "
+                // {session}
+                hide_frame_for_single_pane "false"
+                border_enabled  "false"
+                // mode_normal  "#[fg=red]  "
+                mode_normal  "#[fg=yellow]   "
+                mode_locked  "#[fg=red]   "
+                mode_tmux    "#[bg=cyan]"
+
+                // formatting for inactive tabs
+                tab_normal              "#[fg=#6C7086]{name}"
+                tab_normal_fullscreen   "#[fg=#6C7086]{name}"
+                tab_normal_sync         "#[fg=#6C7086]{name}"
+
+                // formatting for the current active tab
+                tab_active              "#[fg=blue,bold]{name}#[fg=yellow,bold]{floating_indicator}"
+                tab_active_fullscreen   "#[fg=yellow,bold]{name}#[fg=yellow,bold]{fullscreen_indicator}"
+                tab_active_sync         "#[fg=green,bold]{name}#[fg=yellow,bold]{sync_indicator}"
+
+                // separator between the tabs
+                tab_separator           "#[fg=cyan,bold] ⋮ "
+
+                // indicators
+                tab_sync_indicator       " "
+                tab_fullscreen_indicator " "
+                tab_floating_indicator   ""
+
+                datetime        "#[fg=#6C7086,bold] {format} "
+                datetime_format "%A, %d %b %Y %H:%M"
+                datetime_timezone "Europe/Lisbon"
+            }
+        }
+        pane split_direction="vertical" {
+            pane
+            pane size="20%" {
+                pane size="50%" command="{{ .shell_path }}" start_suspended=true close_on_exit=true {
+                    args "-e" "mise dev"
+                }
+                pane command="{{ .shell_path }}" start_suspended=true close_on_exit=true {
+                    args "-e" "mise test"
+                }
+            }
+        }
+    }

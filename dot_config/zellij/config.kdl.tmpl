@@ -197,16 +197,20 @@ keybinds {
         bind "Alt n" { NewPane; }
         bind "Alt i" { MoveTab "Left"; }
         bind "Alt o" { MoveTab "Right"; }
-        bind "Alt h" "Alt Left" { MoveFocusOrTab "Left"; }
-        bind "Alt l" "Alt Right" { MoveFocusOrTab "Right"; }
-        bind "Alt j" "Alt Down" { MoveFocus "Down"; }
-        bind "Alt k" "Alt Up" { MoveFocus "Up"; }
+        bind "Alt j" { MoveFocusOrTab "Left"; }
+        bind "Alt l" { MoveFocusOrTab "Right"; }
+        bind "Alt k" { MoveFocus "Down"; }
+        bind "Alt i" { MoveFocus "Up"; }
         bind "Alt =" "Alt +" { Resize "Increase"; }
         bind "Alt -" { Resize "Decrease"; }
         bind "Alt [" { PreviousSwapLayout; }
         bind "Alt ]" { NextSwapLayout; }
         bind "Alt p" { TogglePaneInGroup; }
         bind "Alt Shift p" { ToggleGroupMarking; }
+        unbind "Alt Left"
+        unbind "Alt Right"
+        unbind "Alt Up"
+        unbind "Alt Down"
     }
     shared_except "normal" "locked" {
         bind "Enter" "Esc" { SwitchToMode "Normal"; }
@@ -347,7 +351,7 @@ default_shell "{{ .shell_path }}"
 //
 // theme "default"
 theme "catppuccin-macchiato"
-default_layout "disable-status-bar"
+//default_layout "disable-status-bar"
 
 
 // The name of the default layout to load on startup
@@ -515,6 +519,8 @@ default_layout "disable-status-bar"
 // Default: true
 //
 // stacked_resize false
+
+show_startup_tips false
 
 // Whether to show release notes on first version run
 // Default: true

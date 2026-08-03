@@ -8,6 +8,8 @@ use ~/.config/nushell/abbr.nu *
 
 use ~/.config/nushell/git-completions.nu *
 
+source zjtab-completions.nu
+
 # For more information on defining custom themes, see
 # https://www.nushell.sh/book/coloring_and_theming.html
 # And here is the theme collection

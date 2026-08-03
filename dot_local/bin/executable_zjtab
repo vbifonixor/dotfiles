@@ -1,0 +1,287 @@
+#!/usr/bin/env nu
+
+def registry_default_paths []: nothing -> list<string> {
+    let home = ($env.HOME | default "~" | path expand)
+    [
+        ($home | path join ".config/zellij/project-registry.toml")
+        ($home | path join ".config/zellij/project-registry.example.toml")
+    ]
+}
+
+def load_registry [--path: string]: nothing -> list<record> {
+    let candidate_paths = (if ($path | is-empty) { registry_default_paths } else { [$path] })
+    let registry_path = ($candidate_paths | where {|p| ($p | path exists)} | get 0? | default "")
+
+    if ($registry_path | is-empty) {
+        error make {
+            msg: "No project registry found"
+            help: $"Create (~/.config/zellij/project-registry.toml) or copy from (~/.config/zellij/project-registry.example.toml)"
+        }
+    }
+
+    let reg = (open --raw $registry_path | from toml)
+    let projects = ($reg.project? | default [])
+
+    if ($projects | is-empty) {
+        error make { msg: $"Registry has no [[project]] entries: ($registry_path)" }
+    }
+
+    $projects
+}
+
+def require_in_zellij []: nothing -> nothing {
+    if ($env.ZELLIJ_SESSION_NAME? | default "" | is-empty) {
+        error make { msg: "Run this inside a Zellij session (ZELLIJ_SESSION_NAME is not set)" }
+    }
+}
+
+def pick_project [projects: list<record>]: nothing -> record {
+    $projects | input list --fuzzy -d name "Project"
+}
+
+def pick_branch_with_wt [repo_root: string]: nothing -> string {
+    # Must be interactive so the worktrunk picker can take over the terminal.
+    # Use --format json so we can reliably parse the selected branch from stdout.
+    let out = (do -i { ^wt -C $repo_root switch --no-cd --format json } | lines)
+
+    let lines = (
+        $out
+        | each {|l| $l | ansi strip | str replace --all "\r" "" | str trim }
+        | where {|l| not ($l | is-empty) }
+    )
+
+    let json_line = (
+        $lines
+        | where {|l| ($l | str starts-with "{") and ($l | str ends-with "}") }
+        | get 0?
+        | default ""
+    )
+
+    if not ($json_line | is-empty) {
+        let obj = ($json_line | from json)
+        let b = ($obj.branch? | default "")
+        if not ($b | str trim | is-empty) {
+            return $b
+        }
+    }
+
+    # Fallback: parse a structured-ish human line, eg:
+    # "○ Switched to worktree for develop @ ~/Projects/foo/develop"
+    let parsed = (
+        $lines
+        | where {|l| $l | str contains "worktree for " }
+        | each {|l|
+            ($l | parse -r 'worktree for\s+(?P<branch>\S+)\s+@' | get 0?.branch? | default "")
+        }
+        | where {|b| not ($b | is-empty) }
+        | get 0?
+        | default ""
+    )
+
+    if not ($parsed | is-empty) { $parsed } else { "" }
+}
+
+def ensure_worktree_path [repo_root: string, branch: string]: nothing -> string {
+    let res = (^wt -C $repo_root switch --no-cd --format json -y $branch | complete)
+    let stdout = ($res.stdout | default "")
+    let stderr = ($res.stderr | default "")
+
+    let json_line = (
+        $stdout
+        | lines
+        | each {|l| $l | str trim }
+        | where {|l| ($l | str starts-with "{") and ($l | str ends-with "}") }
+        | get 0?
+        | default ""
+    )
+
+    if ($json_line | is-empty) {
+        error make {
+            msg: "Could not find JSON line in `wt switch` output"
+            help: ([$stderr $stdout] | where {|s| not ($s | is-empty)} | str join "\n")
+        }
+    }
+
+    let obj = ($json_line | from json)
+    let p = (
+        [$obj.path? $obj.worktree_path?]
+        | where {|x| $x != null and not ($x | str trim | is-empty) }
+        | get 0?
+        | default ""
+    )
+
+    if ($p | is-empty) {
+        error make { msg: "wt JSON did not include a worktree path (.path)" }
+    }
+
+    $p
+}
+
+def resolve_layout [
+    layout: string,
+    repo_root: string,
+    worktree_path: string,
+]: nothing -> record {
+    let home = ($env.HOME | default "~" | path expand)
+    let config_layouts = ($home | path join ".config/zellij/layouts")
+    let default_layout = ($config_layouts | path join "default.kdl")
+    let repo_root_expanded = ($repo_root | path expand)
+    let worktree_root_expanded = ($worktree_path | path expand)
+    let zjlayout = ($repo_root_expanded | path join "zjlayout.kdl")
+
+    let layout_trim = ($layout | default "" | str trim)
+
+    # 2. If config explicitly overrides with a path, use that path (if it exists).
+    if not ($layout_trim | is-empty) {
+        let looks_like_path = (
+            ($layout_trim | str starts-with "/")
+            or ($layout_trim | str starts-with "~")
+            or ($layout_trim | str contains "/")
+            or ($layout_trim | str ends-with ".kdl")
+        )
+        if $looks_like_path {
+            let expanded = ($layout_trim | path expand)
+            if ($expanded | path exists) {
+                return { path: $expanded, source: "explicit_path" }
+            }
+        }
+    }
+
+    # 1. If there is a `zjlayout.kdl` in the repo_root, use that.
+    if ($zjlayout | path exists) {
+        return { path: $zjlayout, source: "repo_root_zjlayout" }
+    }
+
+    # 3. If layout is a simple string, look for it in ~/.config/zellij/layouts/<name>.kdl
+    if not ($layout_trim | is-empty) {
+        let candidate = ($config_layouts | path join $"($layout_trim).kdl")
+        if ($candidate | path exists) {
+            return { path: $candidate, source: $"config_name:($layout_trim)" }
+        }
+    }
+
+    # 4. Otherwise fall back to ~/.config/zellij/layouts/default.kdl
+    { path: $default_layout, source: "config_default" }
+}
+
+def current_tab_id []: nothing -> int {
+    # Prefer JSON, but fall back to the default textual output.
+    let res_json = (^zellij action current-tab-info --json | complete)
+    let txt_json = [($res_json.stdout | default "") ($res_json.stderr | default "")] | str join "\n"
+
+    let json_line = (
+        $txt_json
+        | lines
+        | each {|l| $l | str trim }
+        | where {|l| ($l | str starts-with "{") and ($l | str ends-with "}") }
+        | get 0?
+        | default ""
+    )
+
+    if not ($json_line | is-empty) {
+        let info = ($json_line | from json)
+        let id = ($info.id? | default null)
+        if $id != null {
+            return $id
+        }
+    }
+
+    let res_txt = (^zellij action current-tab-info | complete)
+    let txt = [($res_txt.stdout | default "") ($res_txt.stderr | default "")] | str join "\n"
+    let lines = (
+        $txt
+        | lines
+        | each {|l| $l | ansi strip | str trim }
+        | where {|l| not ($l | is-empty) }
+    )
+    if ($lines | is-empty) {
+        error make { msg: "Could not parse current tab info (no output)" }
+    }
+
+    # Common formats:
+    # 1) "<tab_name> <id>"
+    # 2) "name: <tab_name>\nid: <id>" (possibly with wrapping)
+    let joined = ($lines | str join "\n")
+
+    let id_from_key = (
+        $joined
+        | parse -r '(?m)^id:\s*(?P<id>\d+)\b'
+        | get 0?.id?
+        | default ""
+    )
+    if not ($id_from_key | is-empty) {
+        return ($id_from_key | into int)
+    }
+
+    # Fallback: take the last integer token found anywhere in the output
+    let ids = (
+        $lines
+        | each {|l|
+            ($l | parse -r '.*\b(?P<id>\d+)\b.*' | get 0?.id? | default "")
+        }
+        | where {|x| not ($x | is-empty) }
+    )
+    let last_id = if ($ids | is-empty) { "" } else { $ids | last }
+    if ($last_id | is-empty) {
+        error make { msg: $"Could not parse current tab id from output: ($joined)" }
+    }
+    $last_id | into int
+}
+
+def main [
+    --project(-p): string
+    --branch(-b): string
+    --registry: string
+    --no-close
+] {
+    require_in_zellij
+
+    let projects = (load_registry --path ($registry | default ""))
+
+    let proj = if (($project | default "" | str trim) | is-empty) {
+        pick_project $projects
+    } else {
+        let found = ($projects | where {|x| $x.name == $project })
+        if ($found | is-empty) {
+            error make { msg: $"Unknown project: ($project)" }
+        }
+        $found | first
+    }
+
+    let repo_root = ($proj.repo_root | path expand)
+    let layout = ($proj.layout? | default "")
+
+    let selected_branch = if (($branch | default "" | str trim) | is-empty) {
+        pick_branch_with_wt $repo_root | default ""
+    } else { $branch }
+
+    if (($selected_branch | default "" | str trim) | is-empty) {
+        # User likely cancelled the picker (Esc/q) or wt produced no parseable output.
+        return
+    }
+
+    let worktree_path = (ensure_worktree_path $repo_root $selected_branch)
+    let resolved_layout = (resolve_layout $layout $repo_root $worktree_path)
+    let layout_path = ($resolved_layout.path | into string)
+    let layout_source = ($resolved_layout | get source)
+
+    print ("zjtab: layout=" + $layout_path + " (source=" + $layout_source + ")")
+
+    # Create a new tab (inherits your default tab template / status plugins),
+    # then apply the project layout to the active tab while retaining plugin panes.
+    let should_close = (not $no_close)
+    let old_tab_id = if $should_close { current_tab_id } else { 0 }
+
+    let new_tab_id = (
+        ^zellij action new-tab --name $"($proj.name):($selected_branch)" --cwd $worktree_path
+        | str trim
+        | into int
+    )
+    ^zellij action go-to-tab-by-id $new_tab_id | ignore
+    ^zellij action override-layout --apply-only-to-active-tab --retain-existing-plugin-panes $layout_path | ignore
+
+    if $should_close and ($old_tab_id != $new_tab_id) {
+        do -i { ^zellij action close-tab-by-id $old_tab_id } | ignore
+    }
+}
+

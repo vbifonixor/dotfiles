@@ -1,0 +1,30 @@
+## Example per-machine registry for `zjtab` (NOT intended to be managed by chezmoi)
+##
+## Copy this file to:
+##   ~/.config/zellij/project-registry.toml
+##
+## Then edit paths/commands for this machine.
+##
+## Fields:
+## - name:      project identifier (shown in picker)
+## - repo_root: path to the git repo root for `wt -C ...`
+## - layout:    zellij layout name (in ~/.config/zellij/layouts) or a full path to a .kdl file
+##
+## Layout resolution precedence (implemented by `zjtab`):
+## 1) If `<worktree_root>/zjlayout.kdl` exists, it is used
+##    (unless `layout` is an explicit path AND that path exists)
+## 2) If `layout` is a path and exists, use it
+## 3) If `layout` is a simple name (eg "frontend"), use: ~/.config/zellij/layouts/frontend.kdl
+## 4) Otherwise fall back to: ~/.config/zellij/layouts/default.kdl
+##
+
+[[project]]
+name = "frontend"
+repo_root = "/path/to/your/frontend-repo"
+layout = "frontend"
+
+[[project]]
+name = "dotfiles"
+repo_root = "/path/to/your/chezmoi"
+layout = "default"
+
