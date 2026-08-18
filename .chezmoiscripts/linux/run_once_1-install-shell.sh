@@ -1,19 +1,12 @@
 #!/usr/bin/bash
 
-# Update PPAs
+# install nushell
+sudo apt install wget
+
+wget -qO- https://apt.fury.io/nushell/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/fury-nushell.gpg
+echo "deb [signed-by=/etc/apt/keyrings/fury-nushell.gpg] https://apt.fury.io/nushell/ /" | sudo tee /etc/apt/sources.list.d/fury-nushell.list
 sudo apt update
-
-# Install build dependencies
-sudo apt install -y pkg-config libssl-dev build-essential
-
-# Install Rust
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-
-# Add cargo to PATH
-source ~/.cargo/env
-
-# Install nushell
-cargo install nu@0.101.0 --locked
+sudo apt install nushell
 
 # Add nushell to shells list
 echo "$(which nu)" | sudo tee -a /etc/shells
